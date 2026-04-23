@@ -33,6 +33,85 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
+// POST - Add new order
+app.post('/api/orders', (req, res) => {
+  const { orderId, totalAmount } = req.body;
+  
+  // Validation
+  if (!orderId || !totalAmount) {
+    return res.status(400).json({
+      success: false,
+      message: 'orderId and totalAmount are required'
+    });
+  }
+  
+  // Check if order already exists
+  const exists = orders.find(o => o.orderId === orderId);
+  if (exists) {
+    return res.status(400).json({
+      success: false,
+      message: 'Order ID already exists'
+    });
+  }
+  
+  // Add new order
+  const newOrder = { orderId, totalAmount: parseFloat(totalAmount) };
+  orders.push(newOrder);
+  
+  res.status(201).json({
+    success: true,
+    message: 'Order added successfully',
+    data: newOrder
+  });
+});
+
+// PUT - Update existing order
+app.put('/api/orders/:id', (req, res) => {
+  const { id } = req.params;
+  const { totalAmount } = req.body;
+  
+  const index = orders.findIndex(o => o.orderId === id);
+  
+  if (index === -1) {
+    return res.status(404).json({
+      success: false,
+      message: 'Order not found'
+    });
+  }
+  
+  // Update order
+  orders[index].totalAmount = parseFloat(totalAmount);
+  
+  res.json({
+    success: true,
+    message: 'Order updated successfully',
+    data: orders[index]
+  });
+});
+
+// DELETE - Remove order
+app.delete('/api/orders/:id', (req, res) => {
+  const { id } = req.params;
+  
+  const index = orders.findIndex(o => o.orderId === id);
+  
+  if (index === -1) {
+    return res.status(404).json({
+      success: false,
+      message: 'Order not found'
+    });
+  }
+  
+  // Remove order
+  const deletedOrder = orders.splice(index, 1)[0];
+  
+  res.json({
+    success: true,
+    message: 'Order deleted successfully',
+    data: deletedOrder
+  });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
