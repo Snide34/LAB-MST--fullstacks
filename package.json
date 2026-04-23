@@ -1,0 +1,14 @@
+{
+  "name": "orders-management-system",
+  "version": "1.0.0",
+  "description": "Full-stack orders management system with Express.js and React",
+  "scripts": {
+    "test": "node test-integration.js",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npm start",
+    "install-all": "cd backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": ["express", "react", "orders", "api", "axios"],
+  "author": "",
+  "license": "MIT"
+}
